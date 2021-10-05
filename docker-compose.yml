@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  cargo-api:
+    container_name: cargo-api-v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3001
+    expose:
+      - 3001
+    environment:
+      SERVICE_PORT: 3001
+      API_SALT: 10
+      IS_DEV: false!
+      JWT_SECRET: SuperCoolSecret123!
+      MONGO_USER: test123
+      MONGO_PASSWORD: test123
+      MONGO_DATABASE: cargo
+      MONGO_PORT: 27017
+      MONGO_HOST: localhost
+      IS_ATLAS: false!
+
+    volumes:
+      - ./src:/home/node/cargo-api/src
+    command: npm run start
+
+  mongodb:
+    container_name: cargo-api-v1-database
+    image: mongo:4
+    ports:
+      - 27017:27017
+    command: mongod --noauth
+
+  redis:
+    container_name: cargo-api-v1-redis
+    image: 'redis:alpine'
+    expose:
+      - 6379
+    ports:
+      - '6379:6379'
